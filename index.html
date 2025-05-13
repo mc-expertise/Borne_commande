@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borne de Commande</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="app">
+      <!-- Langue -->
+      <section id="langPage" class="first_section">
+        <button class="navLink_lang" lang="fr" onclick="setLang('fr')">
+          Français
+        </button>
+        <button class="navLink_lang" lang="ar" onclick="setLang('ar')">
+          العربية
+        </button>
+      </section>
+      <!-- Main Page -->
+      <section class="main_section hidden">
+        <!-- Accueil -->
+        <section id="home" class="">
+          <img src="logo.png" alt="Logo" class="logo" />
+
+          <!-- Categories -->
+          <section id="categories" class="hiddenScrollBar"></section>
+
+          <button onclick="setLang('')" class="btn_return" data-i18n="back">
+            Retour
+          </button>
+        </section>
+
+        <!-- Produits -->
+        <section id="products" class="">
+          <h2 id="product-category-title">Churros</h2>
+          <div id="product-list">
+            <!-- Produit 1 -->
+            <!-- <div class="arrow_btn">
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                stroke="#fff"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M4 8L12 16L20 8"
+                    stroke="#fff"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+            </div> -->
+          </div>
+        </section>
+
+        <!-- Panier -->
+        <section id="cart" class="">
+          <div class="cart_commande">
+            <h2 data-i18n="your_order">Votre commande</h2>
+            <div class="container_items_selected">
+              <label data-i18n="my_menu" class="title_items">Mon menu:</label>
+              <div class="items_selected">
+                <!-- products or Items selected -->
+              </div>
+            </div>
+          </div>
+          <div class="total_cost">
+            <div class="total_commande">
+              <label data-i18n="total">Total commande:</label>
+              <span id="total-price">0 DH</span>
+            </div>
+            <button onclick="submitOrder()" data-i18n="confirm_order">
+              Valider la commande
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <section class="overview_page">
+        <div class="popup_container">
+          <h1>Validations</h1>
+          <div class="number_container">
+            <input type="text" placeholder="Numero" class="inputNumber" />
+            <div class="keyboard">
+              <div class="number">
+                <span data-number="1"><i>1</i></span>
+                <span data-number="2"><i>2</i></span>
+                <span data-number="3"><i>3</i></span>
+                <span data-number="4"><i>4</i></span>
+                <span data-number="5"><i>5</i></span>
+                <span data-number="6"><i>6</i></span>
+                <span data-number="7"><i>7</i></span>
+                <span data-number="8"><i>8</i></span>
+                <span data-number="9"><i>9</i></span>
+                <span data-number="9"><i>0</i></span>
+              </div>
+            </div>
+          </div>
+          <button onclick="" data-i18n="imprimer_ticket">
+            Imprimer mon ticket
+          </button>
+        </div>
+      </section>
+
+      <!-- Confirmation -->
+      <!-- <section id="confirmation" class=" hidden">
+        <h2 data-i18n="thank_you">Merci pour votre commande !</h2>
+        <p data-i18n="order_received">Votre commande a été enregistrée.</p>
+        <button onclick="restartApp()" data-i18n="new_order">
+          Nouvelle commande
+        </button>
+      </section> -->
+    </main>
+
+    <script src="lang.js"></script>
+    <script src="data.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
