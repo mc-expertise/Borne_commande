@@ -47,9 +47,8 @@ body {
   border-radius: 8px;
   background-color: white;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-around;
+  align-items: start;
   padding: 24px;
 }
 
@@ -297,16 +296,29 @@ button:hover {
   box-shadow: 0px 0px 17px -1px rgba(132, 132, 132, 0.15);
 }
 
+.number_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 45%;
+  height: 100%;
+}
+.keyboard {
+  width: 100%;
+  margin-top: 24px;
+}
+
 .number {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  justify-content: center;
+  place-items: center;
 }
 
 .number > span {
   margin-top: 5px;
   font-size: 20px;
-  color: #d1d1d1;
+  color: #510e0e;
   font-weight: 400;
   width: 55px;
   height: 55px;
@@ -316,4 +328,9 @@ button:hover {
   box-shadow: 8px 8px 24px 0px rgba(132, 132, 132, 0.09);
   cursor: pointer;
 }
+
+.number > span:last-child {
+  grid-column: 2;
+}
+
 /* End Popup Part */

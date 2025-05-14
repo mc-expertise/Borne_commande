@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
   );
   const itemsSelectedContainer = document.querySelector('.items_selected');
   const totalPriceElement = document.querySelector('#total-price');
+  const inputNumber = document.querySelector('.inputNumber');
+  const numberSpans = document.querySelectorAll('.number span');
+
+  numberSpans.forEach((span) => {
+    span.addEventListener('click', () => {
+      inputNumber.value += span.dataset.number;
+    });
+  });
 
   let cart = {};
   function updateCategories(lang) {
