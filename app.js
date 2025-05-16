@@ -11,8 +11,49 @@ document.addEventListener('DOMContentLoaded', function () {
   const inputNumber = document.querySelector('.inputNumber');
   const numberSpans = document.querySelectorAll('.number span');
 
+  const overviewPage = document.querySelector('.overview_page');
+  const submitOrderButton = document.querySelector(
+    'button[data-i18n="confirm_order"]'
+  );
+
+  overviewPage.addEventListener('click', (e) => {
+    overviewPage.style.display = 'none'; // Hidden the overview page
+  });
+  submitOrderButton.addEventListener('click', () => {
+    if (Object.keys(cart).length > 0) {
+      displayOverviewPage();
+    } else {
+      alert('Your cart is empty!');
+    }
+  });
+
+  function displayOverviewPage() {
+    overviewPage.style.display = 'flex'; // Show the overview page
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+    const cartContainer = overviewPage.querySelector('.cart_container');
+    cartContainer.innerHTML = '<h1>Ma commande</h1>'; // Reset cart container
+    Object.values(cart).forEach((item) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item_selected';
+      const itemName = document.createElement('span');
+      itemName.className = 'item_name';
+      itemName.textContent = item.name[document.documentElement.lang];
+      const itemPrice = document.createElement('span');
+      itemPrice.className = 'item_price';
+      itemPrice.textContent = `${item.price * item.quantity} DH`;
+      itemDiv.appendChild(itemName);
+      itemDiv.appendChild(itemPrice);
+      cartContainer.appendChild(itemDiv);
+    });
+  }
+
   numberSpans.forEach((span) => {
-    span.addEventListener('click', () => {
+    span.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       inputNumber.value += span.dataset.number;
     });
   });
@@ -68,6 +109,43 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateCartDisplay(lang) {
+    itemsSelectedContainer.innerHTML = '';
+    let totalPrice = 0; // Clear existing items
+    Object.values(cart).forEach((item) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item_selected';
+      const itemName = document.createElement('span');
+      itemName.className = 'item_name';
+      itemName.textContent = item.name[lang];
+      const quantityDiv = document.createElement('div');
+      quantityDiv.className = 'quantity';
+      const decrementButton = document.createElement('button');
+      decrementButton.textContent = '-';
+      decrementButton.onclick = () => changeQuantity(item.id, -1, lang);
+      const quantitySpan = document.createElement('span');
+      quantitySpan.id = `quantity-${item.id}`;
+      quantitySpan.textContent = item.quantity;
+      const incrementButton = document.createElement('button');
+      incrementButton.textContent = '+';
+      incrementButton.onclick = () => changeQuantity(item.id, 1, lang);
+      const itemPrice = document.createElement('span');
+      itemPrice.className = 'item_price';
+      itemPrice.textContent = `${item.price * item.quantity} DH`;
+
+      totalPrice += item.price * item.quantity;
+
+      quantityDiv.appendChild(decrementButton);
+      quantityDiv.appendChild(quantitySpan);
+      quantityDiv.appendChild(incrementButton);
+      itemDiv.appendChild(itemName);
+      itemDiv.appendChild(quantityDiv);
+      itemDiv.appendChild(itemPrice);
+      itemsSelectedContainer.appendChild(itemDiv);
+    });
+    totalPriceElement.textContent = `${totalPrice} DH`;
+  }
+
+  function ShowItemsInCart(lang) {
     itemsSelectedContainer.innerHTML = '';
     let totalPrice = 0; // Clear existing items
     Object.values(cart).forEach((item) => {

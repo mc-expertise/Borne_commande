@@ -9,6 +9,7 @@ const translations = {
     order_received: 'Votre commande a été enregistrée.',
     new_order: 'Nouvelle commande',
     my_menu: 'Mon menu',
+    imprimer_ticket: 'Imprimer le ticket',
   },
   ar: {
     start_order: 'اطلب الآن',
@@ -20,6 +21,7 @@ const translations = {
     order_received: 'تم تسجيل طلبك.',
     new_order: 'طلب جديد',
     my_menu: 'قائمةي',
+    imprimer_ticket: 'طباعة التذكرة',
   },
 };
 
