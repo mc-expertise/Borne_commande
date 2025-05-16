@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const submitOrderButton = document.querySelector(
     'button[data-i18n="confirm_order"]'
   );
+  const printButton = document.querySelector(
+    'button[data-i18n="imprimer_ticket"]'
+  );
+
+  printButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    printTicket();
+  });
 
   overviewPage.addEventListener('click', (e) => {
     overviewPage.style.display = 'none'; // Hidden the overview page
