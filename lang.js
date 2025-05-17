@@ -10,6 +10,14 @@ const translations = {
     new_order: 'Nouvelle commande',
     my_menu: 'Mon menu',
     imprimer_ticket: 'Imprimer le ticket',
+    total: 'Total',
+    cart_vide: 'Le panier est vide',
+    mad: 'DH',
+    gaufres: 'Gaufres',
+    churros_sucres: 'Churros sucrés',
+    churros_sales: 'Churros salés',
+    dessert: 'Dessert',
+    backToMenu: 'Retour au menu',
   },
   ar: {
     start_order: 'اطلب الآن',
@@ -20,8 +28,16 @@ const translations = {
     thank_you: 'شكراً لطلبك!',
     order_received: 'تم تسجيل طلبك.',
     new_order: 'طلب جديد',
-    my_menu: 'قائمةي',
+    my_menu: 'القائمة',
     imprimer_ticket: 'طباعة التذكرة',
+    total: 'المجموع',
+    cart_vide: 'السلة فارغة',
+    mad: 'د.ج',
+    gaufres: 'وافيل',
+    churros_sucres: 'تشوروز حلو',
+    churros_sales: 'تشوروز مالح',
+    dessert: 'حلويات',
+    backToMenu: 'العودة إلى القائمة',
   },
 };
 
@@ -42,13 +58,23 @@ function setLang(lang) {
     const key = el.getAttribute('data-i18n');
     el.innerText = translations[lang][key] || key;
   });
-  // const html = document.querySelector('html');
 
-  // if (lang === 'ar') {
-  //   html.setAttribute('dir', 'rtl');
-  // } else {
-  //   html.removeAttribute('dir');
-  // }
+  const yourOrder = document.querySelector('[data-i18n="your_order"]');
+  const contentMenu = document.querySelector('.container_items_selected');
+  const totalCommande = document.querySelector('.total_commande');
+  const titleCategory = document.getElementById('product-category-title');
+
+  if (lang === 'ar') {
+    contentMenu.setAttribute('dir', 'rtl');
+    yourOrder.setAttribute('dir', 'rtl');
+    titleCategory.setAttribute('dir', 'rtl');
+    totalCommande.style.flexDirection = 'row-reverse';
+  } else {
+    contentMenu.removeAttribute('dir');
+    yourOrder.removeAttribute('dir');
+    titleCategory.removeAttribute('dir');
+    totalCommande.style.flexDirection = 'row';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
