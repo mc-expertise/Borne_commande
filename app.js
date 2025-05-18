@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   overviewPage.addEventListener('click', (e) => {
     overviewPage.style.display = 'none'; // Hidden the overview page
+    document.body.classList.remove('no-scroll');
   });
   submitOrderButton.addEventListener('click', () => {
     if (Object.keys(cart).length > 0) {
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function displayOverviewPage() {
     overviewPage.style.display = 'flex'; // Show the overview page
+    document.body.classList.add('no-scroll');
     window.scrollTo({
       top: 0,
       // behavior: 'smooth',

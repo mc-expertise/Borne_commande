@@ -27,6 +27,10 @@ body {
   color: white !important;
   font-size: 28px !important;
 }
+.no-scroll {
+  overflow-y: hidden;
+}
+
 .overview_home_page {
   position: absolute;
   top: 0;
