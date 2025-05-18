@@ -1,8 +1,24 @@
 export const categories = [
-  { id: 'gaufres', name: { fr: 'Gaufres', ar: 'وافيل' } },
-  { id: 'churros_sucres', name: { fr: 'Churros Sucrés', ar: 'تشوروز حلو' } },
-  { id: 'churros_sales', name: { fr: 'Churros Salés', ar: 'تشوروز مالح' } },
-  { id: 'dessert', name: { fr: 'Dessert', ar: 'حلويات' } },
+  {
+    id: 'gaufres',
+    name: { fr: 'Gaufres', ar: 'وافيل' },
+    img: 'images/gaufres_categ.jpeg',
+  },
+  {
+    id: 'churros_sucres',
+    name: { fr: 'Churros Sucrés', ar: 'تشوروز حلو' },
+    img: 'images/churros_categ.jpeg',
+  },
+  {
+    id: 'churros_sales',
+    name: { fr: 'Churros Salés', ar: 'تشوروز مالح' },
+    img: 'images/churros_sales_categ.jpeg',
+  },
+  {
+    id: 'dessert',
+    name: { fr: 'Dessert', ar: 'حلويات' },
+    img: 'images/desserts_categ.jpeg',
+  },
 ];
 
 export const products = {

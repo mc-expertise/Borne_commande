@@ -17,7 +17,9 @@ const translations = {
     churros_sucres: 'Churros sucrés',
     churros_sales: 'Churros salés',
     dessert: 'Dessert',
-    backToMenu: 'Retour au menu',
+    backToMenu: 'Revenir au menu',
+    categories: 'Choisir une catégorie',
+    changer_langue: 'Changer langue',
   },
   ar: {
     start_order: 'اطلب الآن',
@@ -38,6 +40,8 @@ const translations = {
     churros_sales: 'تشوروز مالح',
     dessert: 'حلويات',
     backToMenu: 'العودة إلى القائمة',
+    categories: 'اختر فئة',
+    changer_langue: 'تغيير اللغة',
   },
 };
 

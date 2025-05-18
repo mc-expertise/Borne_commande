@@ -433,7 +433,9 @@ button:hover {
   width: 100%;
 }
 .content_btn > button {
+  width: 250px;
   flex: 1;
+  cursor: pointer;
 }
 
 /* End Popup Part */

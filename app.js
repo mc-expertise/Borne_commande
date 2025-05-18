@@ -79,6 +79,22 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateCategories(lang) {
     categoriesContainer.innerHTML = ''; // Clear existing categories
     categories.forEach((category) => {
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'product';
+      const categoryImg = document.createElement('img');
+      categoryImg.src = category.img;
+      categoryImg.alt = category.name[lang];
+      categoryImg.addEventListener('click', (e) => {
+        e.preventDefault();
+        categoriesContainer
+          .querySelectorAll('a')
+          .forEach((link) => link.classList.remove('clicked'));
+        link.classList.add('clicked'); // Add active class to the clicked link
+        displayProducts(category.id, lang);
+      });
+      categoryDiv.appendChild(categoryImg);
+      productList.appendChild(categoryDiv);
+
       const link = document.createElement('a');
       link.href = '#';
       link.setAttribute('data-i18n', category.id);
