@@ -20,11 +20,20 @@
         <img src="./images/logo.png" alt="Logo_" class="logo_lang" />
         <!-- <h1>Choisir Votre Langue</h1> -->
         <div class="content_lang">
-          <button class="navLink_lang" lang="fr" onclick="setLang('fr')">
-            Français
+          <button
+            id="navLink_lang"
+            class="navLink_lang"
+            lang="fr"
+            onclick="setLang('fr')"
+          >
+            Emporter
           </button>
-          <button class="navLink_lang" lang="ar" onclick="setLang('ar')">
-            العربية
+          <button
+            id="navLink_lang"
+            class="navLink_lang"
+            onclick="setLang('fr')"
+          >
+            Sur Place
           </button>
         </div>
       </section>
@@ -32,32 +41,29 @@
       <section class="main_section hidden">
         <!-- Accueil -->
         <section id="home" class="">
-          <img src="./images/logo.png" alt="Logo_" class="logo" />
+          <!-- <img src="./images/logo.png" alt="Logo_" class="logo" /> -->
 
           <!-- Categories -->
           <section id="categories" class="hiddenScrollBar"></section>
 
-          <button
-            onclick="setLang('')"
-            class="btn_return"
-            data-i18n="changer_langue"
-          >
-            Retour
-          </button>
+          <button onclick="setLang('')" class="btn_return">Retour</button>
         </section>
 
         <!-- Produits -->
         <section id="products" class="">
-          <h2 id="product-category-title" data-i18n="categories"></h2>
+          <div id="product-category-title">
+            <img src="./images/logo.png" alt="Logo_" class="logo" />
+          </div>
+
           <div id="product-list"></div>
         </section>
 
         <!-- Panier -->
         <section id="cart" class="">
           <div class="cart_commande">
-            <h2 data-i18n="your_order">Votre commande</h2>
+            <!-- <h2>Commande</h2> -->
             <div class="container_items_selected" dir="rtl">
-              <label data-i18n="my_menu" class="title_items">Mon menu:</label>
+              <label class="title_items">Commande:</label>
               <div class="items_selected">
                 <p data-i18n="cart_vide"></p>
                 <!-- products or Items selected -->
@@ -112,6 +118,120 @@
             <button onclick="" data-i18n="imprimer_ticket">
               Imprimer mon ticket
             </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="overview_page_gaufres">
+        <div class="popup_container">
+          <div class="closeIcon">
+            <svg
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM15.36 14.3C15.65 14.59 15.65 15.07 15.36 15.36C15.21 15.51 15.02 15.58 14.83 15.58C14.64 15.58 14.45 15.51 14.3 15.36L12 13.06L9.7 15.36C9.55 15.51 9.36 15.58 9.17 15.58C8.98 15.58 8.79 15.51 8.64 15.36C8.35 15.07 8.35 14.59 8.64 14.3L10.94 12L8.64 9.7C8.35 9.41 8.35 8.93 8.64 8.64C8.93 8.35 9.41 8.35 9.7 8.64L12 10.94L14.3 8.64C14.59 8.35 15.07 8.35 15.36 8.64C15.65 8.93 15.65 9.41 15.36 9.7L13.06 12L15.36 14.3Z"
+                  fill="#a1092f"
+                ></path>
+              </g>
+            </svg>
+          </div>
+          <h1>Suplements</h1>
+          <div class="popup-content_gaufres">
+            <div class="option" data-price="0">No Merci</div>
+            <div class="option" data-price="3"><span>Banane</span> +3dh</div>
+            <div class="option" data-price="1"><span>Switeees</span> +1dh</div>
+          </div>
+          <div class="content_btn">
+            <button class="validate_gauffre">Valider</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="overview_page_gaufres_mix">
+        <div class="popup_container">
+          <div class="closeIcon">
+            <svg
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM15.36 14.3C15.65 14.59 15.65 15.07 15.36 15.36C15.21 15.51 15.02 15.58 14.83 15.58C14.64 15.58 14.45 15.51 14.3 15.36L12 13.06L9.7 15.36C9.55 15.51 9.36 15.58 9.17 15.58C8.98 15.58 8.79 15.51 8.64 15.36C8.35 15.07 8.35 14.59 8.64 14.3L10.94 12L8.64 9.7C8.35 9.41 8.35 8.93 8.64 8.64C8.93 8.35 9.41 8.35 9.7 8.64L12 10.94L14.3 8.64C14.59 8.35 15.07 8.35 15.36 8.64C15.65 8.93 15.65 9.41 15.36 9.7L13.06 12L15.36 14.3Z"
+                  fill="#a1092f"
+                ></path>
+              </g>
+            </svg>
+          </div>
+          <h1>Suplements</h1>
+          <div class="popup-content_gaufres">
+            <div class="option" data-price="0">No Merci</div>
+            <div class="option" data-price="3"><span>Banane</span> +3dh</div>
+            <div class="option" data-price="1"><span>Switeees</span> +1dh</div>
+          </div>
+          <h1>2 CHOIX</h1>
+          <div class="popup-content_gaufres_choix">
+            <div class="option" data-price="0">Chocolat</div>
+            <div class="option" data-price="3">Caramel</div>
+            <div class="option" data-price="1">Framboise</div>
+            <div class="option" data-price="1">Citron</div>
+          </div>
+          <div class="content_btn">
+            <button class="validate_gauffre">Valider</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="overview_page_churros_sucres">
+        <div class="popup_container">
+          <div class="closeIcon">
+            <svg
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM15.36 14.3C15.65 14.59 15.65 15.07 15.36 15.36C15.21 15.51 15.02 15.58 14.83 15.58C14.64 15.58 14.45 15.51 14.3 15.36L12 13.06L9.7 15.36C9.55 15.51 9.36 15.58 9.17 15.58C8.98 15.58 8.79 15.51 8.64 15.36C8.35 15.07 8.35 14.59 8.64 14.3L10.94 12L8.64 9.7C8.35 9.41 8.35 8.93 8.64 8.64C8.93 8.35 9.41 8.35 9.7 8.64L12 10.94L14.3 8.64C14.59 8.35 15.07 8.35 15.36 8.64C15.65 8.93 15.65 9.41 15.36 9.7L13.06 12L15.36 14.3Z"
+                  fill="#a1092f"
+                ></path>
+              </g>
+            </svg>
+          </div>
+          <h1>Votre Choix</h1>
+          <div class="popup-content_gaufres">
+            <div class="option">Sucre</div>
+            <div class="option">Sans Sucre</div>
+          </div>
+          <div class="content_btn">
+            <button class="validate_gauffre">Valider</button>
           </div>
         </div>
       </section>

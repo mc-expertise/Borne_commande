@@ -3,20 +3,27 @@ import { categories, products } from './data.js';
 document.addEventListener('DOMContentLoaded', function () {
   const categoriesContainer = document.querySelector('#categories');
   const productList = document.querySelector('#product-list');
-  const productCategoryTitle = document.querySelector(
-    '#product-category-title'
-  );
   const itemsSelectedContainer = document.querySelector('.items_selected');
   const totalPriceElement = document.querySelector('#total-price');
-  const inputNumber = document.querySelector('.inputNumber');
-
   const overviewPage = document.querySelector('.overview_page');
+  const overviewPageGaufres = document.querySelector('.overview_page_gaufres');
+  const overviewPageGaufresMix = document.querySelector(
+    '.overview_page_gaufres_mix'
+  );
   const submitOrderButton = document.querySelector(
     'button[data-i18n="confirm_order"]'
   );
   const printButton = document.querySelector(
     'button[data-i18n="imprimer_ticket"]'
   );
+
+  document.getElementById('navLink_lang').addEventListener('click', () => {
+    displayProducts(
+      categories[0].id,
+      document.documentElement.lang,
+      categories[0].epuise
+    );
+  });
 
   printButton.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -25,6 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   overviewPage.addEventListener('click', (e) => {
     overviewPage.style.display = 'none'; // Hidden the overview page
+    document.body.classList.remove('no-scroll');
+  });
+  overviewPageGaufres.addEventListener('click', (e) => {
+    overviewPageGaufres.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  });
+  overviewPageGaufresMix.addEventListener('click', (e) => {
+    overviewPageGaufresMix.style.display = 'none';
     document.body.classList.remove('no-scroll');
   });
   submitOrderButton.addEventListener('click', () => {
@@ -92,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
           .querySelectorAll('a')
           .forEach((link) => link.classList.remove('clicked'));
         link.classList.add('clicked'); // Add active class to the clicked link
-        displayProducts(category.id, lang);
+        displayProducts(category.id, lang, category.epuise);
       });
       categoryDiv.appendChild(categoryImg);
       productList.appendChild(categoryDiv);
@@ -107,17 +122,17 @@ document.addEventListener('DOMContentLoaded', function () {
           .querySelectorAll('a')
           .forEach((link) => link.classList.remove('clicked')); // Remove active class from all lin
         link.classList.add('clicked'); // Add active class to the clicked link
-        displayProducts(category.id, lang);
+        displayProducts(category.id, lang, category.epuise);
       }); // Add event listener to the lin
       categoriesContainer.appendChild(link);
     });
   }
 
-  function displayProducts(categoryId, lang) {
+  function displayProducts(categoryId, lang, epuise = 1) {
     productList.innerHTML = ''; // Clear existing products
-    productCategoryTitle.textContent = categories.find(
-      (category) => category.id === categoryId
-    ).name[lang];
+    // productCategoryTitle.textContent = categories.find(
+    //   (category) => category.id === categoryId
+    // ).name[lang];
     const categoryProducts = products[categoryId];
     categoryProducts.forEach((product) => {
       const productDiv = document.createElement('div');
@@ -125,13 +140,102 @@ document.addEventListener('DOMContentLoaded', function () {
       const productImg = document.createElement('img');
       productImg.src = product.img;
       productImg.alt = product.name[lang];
+
+      if (epuise === 0) {
+        productImg.style.opacity = '0.5';
+        const outOfStockOverlay = document.createElement('img');
+        outOfStockOverlay.src = 'images/outOfStock.png';
+        outOfStockOverlay.className = 'out-of-stock-overlay';
+        productDiv.appendChild(outOfStockOverlay);
+      }
+
       productImg.addEventListener('click', (e) => {
         e.preventDefault();
-        addToCart(product, lang);
+        if (categoryId === 'gaufres' && epuise !== 0) {
+          if (product.id === 'gaufre-mixte' && epuise !== 0) {
+            showPopup(product, lang, true); // Pass a flag for mix
+          } else {
+            showPopup(product, lang, false);
+          }
+        } else if (epuise !== 0) {
+          addToCart(product, lang);
+        }
       });
       productDiv.appendChild(productImg);
       productList.appendChild(productDiv);
     });
+  }
+
+  function showPopup(product, lang, isMix) {
+    const popup = isMix
+      ? document.querySelector('.overview_page_gaufres_mix')
+      : document.querySelector('.overview_page_gaufres');
+    popup.style.display = 'flex';
+
+    const supplementOptions = popup.querySelectorAll(
+      '.popup-content_gaufres .option'
+    );
+    const choiceOptions = popup.querySelectorAll(
+      '.popup-content_gaufres_choix .option'
+    );
+
+    supplementOptions.forEach((option) => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+        option.classList.add('selected');
+      });
+    });
+
+    choiceOptions.forEach((option) => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedChoices = Array.from(choiceOptions).filter((opt) =>
+          opt.classList.contains('selected')
+        );
+        if (
+          selectedChoices.length < 2 ||
+          option.classList.contains('selected')
+        ) {
+          option.classList.toggle('selected');
+        }
+      });
+    });
+
+    const validateButton = popup.querySelector('.validate_gauffre');
+    validateButton.addEventListener(
+      'click',
+      (function (currentProduct) {
+        return function () {
+          const selectedSupplement = Array.from(supplementOptions).find((opt) =>
+            opt.classList.contains('selected')
+          );
+          const selectedChoices = Array.from(choiceOptions).filter((opt) =>
+            opt.classList.contains('selected')
+          );
+
+          let additionalPrice = 0;
+          let optionNames = [];
+
+          if (selectedSupplement) {
+            additionalPrice += parseInt(selectedSupplement.dataset.price);
+            optionNames.push(selectedSupplement.textContent.trim());
+          }
+
+          selectedChoices.forEach((selectedChoice) => {
+            additionalPrice += parseInt(selectedChoice.dataset.price);
+            optionNames.push(selectedChoice.textContent.trim());
+          });
+
+          currentProduct.price += additionalPrice;
+          currentProduct.name[lang] += ` (${optionNames.join(', ')})`;
+          addToCart(currentProduct, lang);
+          supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+          choiceOptions.forEach((opt) => opt.classList.remove('selected'));
+          popup.style.display = 'none';
+        };
+      })(product)
+    );
   }
 
   function addToCart(product, lang) {
