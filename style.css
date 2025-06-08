@@ -358,6 +358,7 @@ button:hover {
 }
 .items_selected > .item_selected > .item_name {
   width: 135px;
+  font-size: 15px;
 }
 
 .items_selected > .item_selected > .quantity {

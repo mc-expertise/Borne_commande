@@ -219,8 +219,20 @@ document.addEventListener('DOMContentLoaded', function () {
     supplementOptions.forEach((option) => {
       option.addEventListener('click', (e) => {
         e.stopPropagation();
-        supplementOptions.forEach((opt) => opt.classList.remove('selected'));
-        option.classList.add('selected');
+        const name = option.textContent.trim().toLowerCase();
+        if (name === 'sans') {
+          // Deselect all if 'Sans' is selected
+          supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+          option.classList.add('selected');
+        } else {
+          // If 'Sans' was selected, deselect it
+          supplementOptions.forEach((opt) => {
+            if (opt.textContent.trim().toLowerCase() === 'sans') {
+              opt.classList.remove('selected');
+            }
+          });
+          option.classList.toggle('selected');
+        }
       });
     });
 
@@ -256,9 +268,10 @@ document.addEventListener('DOMContentLoaded', function () {
       'click',
       (function (currentProduct) {
         return function () {
-          const selectedSupplement = Array.from(supplementOptions).find((opt) =>
-            opt.classList.contains('selected')
+          const selectedSupplement = Array.from(supplementOptions).filter(
+            (opt) => opt.classList.contains('selected')
           );
+
           const selectedChoices = Array.from(choiceOptions).filter((opt) =>
             opt.classList.contains('selected')
           );
@@ -279,16 +292,17 @@ document.addEventListener('DOMContentLoaded', function () {
           let additionalPrice = 0;
           let optionNames = [];
 
-          if (selectedSupplement) {
-            additionalPrice += parseInt(selectedSupplement.dataset.price);
-            const span = selectedSupplement.querySelector('span');
+          selectedSupplement.forEach((supplement) => {
+            const span = supplement.querySelector('span');
             const name = span
               ? span.textContent.trim()
-              : selectedSupplement.textContent.trim();
+              : supplement.textContent.trim();
+
             if (name.toLowerCase() !== 'sans') {
+              additionalPrice += parseInt(supplement.dataset.price);
               optionNames.push(name);
             }
-          }
+          });
 
           selectedChoices.forEach((selectedChoice) => {
             additionalPrice += parseInt(selectedChoice.dataset.price);
@@ -315,7 +329,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
           addToCart(productClone, lang);
           popup.style.display = 'none';
-          supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+          supplementOptions.forEach((option) => {
+            const newOption = option.cloneNode(true);
+            option.parentNode.replaceChild(newOption, option);
+          });
+
           choiceOptions.forEach((opt) => opt.classList.remove('selected'));
           choiceError.style.display = 'none';
           choiceOptions.forEach((opt) => (opt.style.border = ''));
