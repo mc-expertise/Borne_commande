@@ -162,10 +162,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (epuise === 0) {
         productImg.style.opacity = '0.5';
-        const outOfStockOverlay = document.createElement('img');
-        outOfStockOverlay.src = 'images/outOfStock.png';
-        outOfStockOverlay.className = 'out-of-stock-overlay';
-        productDiv.appendChild(outOfStockOverlay);
+        const outOfStockBadge = document.createElement('div');
+        outOfStockBadge.textContent = 'Épuisé';
+        outOfStockBadge.className = 'out-of-stock-overlay';
+        productDiv.appendChild(outOfStockBadge);
       }
 
       productImg.addEventListener('click', (e) => {
