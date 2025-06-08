@@ -1,6 +1,8 @@
 import { categories, products } from './data.js';
 
 document.addEventListener('DOMContentLoaded', function () {
+  let cart = {};
+  let orderNumber = 1;
   const categoriesContainer = document.querySelector('#categories');
   const productList = document.querySelector('#product-list');
   const itemsSelectedContainer = document.querySelector('.items_selected');
@@ -17,16 +19,29 @@ document.addEventListener('DOMContentLoaded', function () {
     'button[data-i18n="imprimer_ticket"]'
   );
 
-  document.getElementById('navLink_lang').addEventListener('click', () => {
-    displayProducts(
-      categories[0].id,
-      document.documentElement.lang,
-      categories[0].epuise
-    );
-  });
+  document.querySelectorAll('#navLink_lang').forEach((link) =>
+    link.addEventListener('click', () => {
+      const link = document.querySelectorAll('#categories a');
+      link.forEach((link) => link.classList.remove('clicked'));
+      link[0].classList.add('clicked');
+      displayProducts(
+        categories[0].id,
+        document.documentElement.lang,
+        categories[0].epuise
+      );
+    })
+  );
 
   printButton.addEventListener('click', (e) => {
     e.stopPropagation();
+    cart = {};
+    updateCartDisplay();
+    showEmptyCartMessage();
+    displayCheckedMark();
+    orderNumber++;
+    setTimeout(() => {
+      overviewPage.style.display = 'none';
+    }, 2000);
     printTicket();
   });
 
@@ -57,9 +72,14 @@ document.addEventListener('DOMContentLoaded', function () {
       top: 0,
       // behavior: 'smooth',
     });
+    let totalAmount = 0; // Initialize total amount
+
     const cartContainer = overviewPage.querySelector('.cart_container');
     cartContainer.innerHTML = '<h1>Ma commande</h1>';
-    let totalAmount = 0; // Initialize total amount
+    const orderHeading = document.createElement('h2');
+    orderHeading.className = 'order_number';
+    orderHeading.textContent = `Votre Nº d'ordre: ${orderNumber}`;
+    cartContainer.appendChild(orderHeading);
 
     Object.values(cart).forEach((item) => {
       const itemDiv = document.createElement('div');
@@ -92,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
     cartContainer.appendChild(totalAmountDiv);
   }
 
-  let cart = {};
   function updateCategories(lang) {
     categoriesContainer.innerHTML = ''; // Clear existing categories
     categories.forEach((category) => {
@@ -151,13 +170,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
       productImg.addEventListener('click', (e) => {
         e.preventDefault();
+        if (epuise === 0) return;
         if (categoryId === 'gaufres' && epuise !== 0) {
           if (product.id === 'gaufre-mixte' && epuise !== 0) {
             showPopup(product, lang, true); // Pass a flag for mix
           } else {
             showPopup(product, lang, false);
           }
-        } else if (epuise !== 0) {
+        } else if (categoryId === 'churros_sucres') {
+          handleChurrosSucresClick(product, lang);
+        } else {
           addToCart(product, lang);
         }
       });
@@ -172,12 +194,27 @@ document.addEventListener('DOMContentLoaded', function () {
       : document.querySelector('.overview_page_gaufres');
     popup.style.display = 'flex';
 
+    const popupContent = popup.querySelector('.popup_container');
+    const closeIcon = popup.querySelector('.popup_container .closeIcon');
+
+    popupContent.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+    closeIcon.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+
     const supplementOptions = popup.querySelectorAll(
       '.popup-content_gaufres .option'
     );
     const choiceOptions = popup.querySelectorAll(
       '.popup-content_gaufres_choix .option'
     );
+    const choiceError = popup.querySelector('.choice-error');
+
+    // Clear previous selections
+    supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+    choiceOptions.forEach((opt) => opt.classList.remove('selected'));
 
     supplementOptions.forEach((option) => {
       option.addEventListener('click', (e) => {
@@ -188,22 +225,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     choiceOptions.forEach((option) => {
-      option.addEventListener('click', (e) => {
+      option.onclick = (e) => {
         e.stopPropagation();
         const selectedChoices = Array.from(choiceOptions).filter((opt) =>
           opt.classList.contains('selected')
         );
+
         if (
           selectedChoices.length < 2 ||
           option.classList.contains('selected')
         ) {
           option.classList.toggle('selected');
         }
-      });
+        // ✅ Clear error if one or two are selected
+        const updatedChoices = Array.from(choiceOptions).filter((opt) =>
+          opt.classList.contains('selected')
+        );
+        if (updatedChoices.length > 0 && updatedChoices.length <= 2) {
+          choiceError.style.display = 'none';
+          choiceOptions.forEach((opt) => (opt.style.border = ''));
+        }
+      };
     });
 
-    const validateButton = popup.querySelector('.validate_gauffre');
-    validateButton.addEventListener(
+    let oldButton = popup.querySelector('.validate_gauffre');
+    let newButton = oldButton.cloneNode(true);
+    oldButton.parentNode.replaceChild(newButton, oldButton);
+
+    newButton.addEventListener(
       'click',
       (function (currentProduct) {
         return function () {
@@ -214,12 +263,31 @@ document.addEventListener('DOMContentLoaded', function () {
             opt.classList.contains('selected')
           );
 
+          if (
+            isMix &&
+            (selectedChoices.length === 0 || selectedChoices.length > 2)
+          ) {
+            choiceError.style.display = 'block';
+            choiceOptions.forEach((opt) => {
+              if (!opt.classList.contains('selected')) {
+                opt.style.border = '1px solid red';
+              }
+            });
+            return; // Prevent closing the popup
+          }
+
           let additionalPrice = 0;
           let optionNames = [];
 
           if (selectedSupplement) {
             additionalPrice += parseInt(selectedSupplement.dataset.price);
-            optionNames.push(selectedSupplement.textContent.trim());
+            const span = selectedSupplement.querySelector('span');
+            const name = span
+              ? span.textContent.trim()
+              : selectedSupplement.textContent.trim();
+            if (name.toLowerCase() !== 'sans') {
+              optionNames.push(name);
+            }
           }
 
           selectedChoices.forEach((selectedChoice) => {
@@ -227,15 +295,100 @@ document.addEventListener('DOMContentLoaded', function () {
             optionNames.push(selectedChoice.textContent.trim());
           });
 
-          currentProduct.price += additionalPrice;
-          currentProduct.name[lang] += ` (${optionNames.join(', ')})`;
-          addToCart(currentProduct, lang);
+          const optionKey = optionNames
+            .join('-')
+            .toLowerCase()
+            .replace(/\s+/g, '');
+          const uniqueId = `${currentProduct.id}-${optionKey || 'default'}`;
+
+          const productClone = {
+            ...currentProduct,
+            id: uniqueId,
+            price: currentProduct.price + additionalPrice,
+            name: {
+              ...currentProduct.name,
+              [lang]: `${currentProduct.name[lang]} ${
+                optionNames.length > 0 ? `- ${optionNames.join(', ')}` : ''
+              }`,
+            },
+          };
+
+          addToCart(productClone, lang);
+          popup.style.display = 'none';
           supplementOptions.forEach((opt) => opt.classList.remove('selected'));
           choiceOptions.forEach((opt) => opt.classList.remove('selected'));
-          popup.style.display = 'none';
+          choiceError.style.display = 'none';
+          choiceOptions.forEach((opt) => (opt.style.border = ''));
         };
       })(product)
     );
+  }
+
+  function handleChurrosSucresClick(product, lang) {
+    const popup = document.querySelector('.overview_page_churros_sucres');
+    const popupContent = document.querySelector(
+      '.overview_page_churros_sucres .popup_container'
+    );
+    const closeIcon = document.querySelector(
+      '.overview_page_churros_sucres .popup_container .closeIcon'
+    );
+
+    closeIcon.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+    popup.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+    popupContent.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+    popup.style.display = 'flex';
+
+    const supplementOptions = popup.querySelectorAll(
+      '.popup-content_gaufres .option'
+    );
+
+    supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+
+    supplementOptions.forEach((option) => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+        option.classList.add('selected');
+      });
+    });
+
+    const oldButton = popup.querySelector('.validate_gauffre');
+    const newButton = oldButton.cloneNode(true);
+    oldButton.parentNode.replaceChild(newButton, oldButton);
+
+    newButton.addEventListener('click', () => {
+      const selectedOption = Array.from(supplementOptions).find((opt) =>
+        opt.classList.contains('selected')
+      );
+
+      const optionKey = selectedOption.textContent.trim().toLowerCase();
+      const uniqueId = `${product.id}-${optionKey || 'default'}`;
+
+      const clone = {
+        ...product,
+        id: uniqueId,
+        name: {
+          ...product.name,
+        },
+      };
+
+      if (
+        selectedOption &&
+        selectedOption.textContent.trim() === 'Sans Sucre'
+      ) {
+        clone.name[lang] = `${product.name[lang]} (Sans Sucre)`;
+      }
+
+      addToCart(clone, lang);
+      popup.style.display = 'none';
+      supplementOptions.forEach((opt) => opt.classList.remove('selected'));
+    });
   }
 
   function addToCart(product, lang) {
@@ -294,43 +447,6 @@ document.addEventListener('DOMContentLoaded', function () {
     totalPriceElement.textContent = `${totalPrice} DH`;
   }
 
-  function ShowItemsInCart(lang) {
-    itemsSelectedContainer.innerHTML = '';
-    let totalPrice = 0; // Clear existing items
-    Object.values(cart).forEach((item) => {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'item_selected';
-      const itemName = document.createElement('span');
-      itemName.className = 'item_name';
-      itemName.textContent = item.name[lang];
-      const quantityDiv = document.createElement('div');
-      quantityDiv.className = 'quantity';
-      const decrementButton = document.createElement('button');
-      decrementButton.textContent = '-';
-      decrementButton.onclick = () => changeQuantity(item.id, -1, lang);
-      const quantitySpan = document.createElement('span');
-      quantitySpan.id = `quantity-${item.id}`;
-      quantitySpan.textContent = item.quantity;
-      const incrementButton = document.createElement('button');
-      incrementButton.textContent = '+';
-      incrementButton.onclick = () => changeQuantity(item.id, 1, lang);
-      const itemPrice = document.createElement('span');
-      itemPrice.className = 'item_price';
-      itemPrice.textContent = `${item.price * item.quantity} DH`;
-
-      totalPrice += item.price * item.quantity;
-
-      quantityDiv.appendChild(decrementButton);
-      quantityDiv.appendChild(quantitySpan);
-      quantityDiv.appendChild(incrementButton);
-      itemDiv.appendChild(itemName);
-      itemDiv.appendChild(quantityDiv);
-      itemDiv.appendChild(itemPrice);
-      itemsSelectedContainer.appendChild(itemDiv);
-    });
-    totalPriceElement.textContent = `${totalPrice} DH`;
-  }
-
   function changeQuantity(productId, change, lang) {
     if (cart[productId]) {
       cart[productId].quantity += change;
@@ -362,6 +478,30 @@ document.addEventListener('DOMContentLoaded', function () {
   const cartIsEmpty = () => {
     return Object.keys(cart).length === 0;
   };
+
+  function displayCheckedMark() {
+    const contentOfPage = document.querySelector(
+      '.overview_page .popup_container'
+    );
+    const overviewPage = document.createElement('div');
+    overviewPage.className = 'overview_page_checked';
+    overviewPage.style.display = 'flex';
+    const checkedMark = document.createElement('video');
+    checkedMark.src = 'images/checkedMark1.webm';
+    checkedMark.className = 'checked';
+    checkedMark.style.width = '300px';
+    checkedMark.autoplay = true;
+    checkedMark.loop = false;
+    checkedMark.muted = true;
+    checkedMark.playsInline = true;
+    overviewPage.appendChild(checkedMark);
+    contentOfPage.appendChild(overviewPage);
+
+    setTimeout(() => {
+      overviewPage.style.display = 'none';
+      checkedMark.src = '';
+    }, 4000);
+  }
 
   // Initialize categories with the default language
   updateCategories(document.documentElement.lang || 'fr');

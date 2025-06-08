@@ -106,13 +106,7 @@
               </g>
             </svg>
           </div>
-          <div class="cart_container">
-            <!-- <h1>Ma commande</h1> -->
-            <!-- <div class="item_selected">
-              <span class="item_name">cafe</span>
-              <span class="item_price">2 DH</span>
-            </div> -->
-          </div>
+          <div class="cart_container"></div>
           <div class="content_btn">
             <button onclick="" data-i18n="backToMenu">Retourner</button>
             <button onclick="" data-i18n="imprimer_ticket">
@@ -148,7 +142,7 @@
           </div>
           <h1>Suplements</h1>
           <div class="popup-content_gaufres">
-            <div class="option" data-price="0">No Merci</div>
+            <div class="option" data-price="0">Sans</div>
             <div class="option" data-price="3"><span>Banane</span> +3dh</div>
             <div class="option" data-price="1"><span>Switeees</span> +1dh</div>
           </div>
@@ -184,16 +178,29 @@
           </div>
           <h1>Suplements</h1>
           <div class="popup-content_gaufres">
-            <div class="option" data-price="0">No Merci</div>
+            <div class="option" data-price="0">Sans</div>
             <div class="option" data-price="3"><span>Banane</span> +3dh</div>
             <div class="option" data-price="1"><span>Switeees</span> +1dh</div>
           </div>
           <h1>2 CHOIX</h1>
+          <p
+            class="choice-error"
+            style="
+              color: red;
+              display: none;
+              font-size: 14px;
+              margin: 4px auto;
+              font-weight: 500;
+            "
+          >
+            Veuillez sélectionner 1 ou 2 choix.
+          </p>
+
           <div class="popup-content_gaufres_choix">
             <div class="option" data-price="0">Chocolat</div>
-            <div class="option" data-price="3">Caramel</div>
-            <div class="option" data-price="1">Framboise</div>
-            <div class="option" data-price="1">Citron</div>
+            <div class="option" data-price="0">Caramel</div>
+            <div class="option" data-price="0">Framboise</div>
+            <div class="option" data-price="0">Citron</div>
           </div>
           <div class="content_btn">
             <button class="validate_gauffre">Valider</button>
@@ -235,15 +242,6 @@
           </div>
         </div>
       </section>
-
-      <!-- Confirmation -->
-      <!-- <section id="confirmation" class=" hidden">
-        <h2 data-i18n="thank_you">Merci pour votre commande !</h2>
-        <p data-i18n="order_received">Votre commande a été enregistrée.</p>
-        <button onclick="restartApp()" data-i18n="new_order">
-          Nouvelle commande
-        </button>
-      </section> -->
     </main>
 
     <script src="lang.js"></script>

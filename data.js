@@ -53,7 +53,7 @@ export const products = {
     },
     {
       id: 'gaufre-mixte',
-      name: { fr: 'Gaufre Mixte (2 choix)', ar: 'وافيل مختلط (اختيارين)' },
+      name: { fr: 'Gaufre Mixte', ar: 'وافيل مختلط (اختيارين)' },
       price: 12,
       img: 'images/gauffre_mixte.png',
     },

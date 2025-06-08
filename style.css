@@ -34,7 +34,7 @@ body {
   position: absolute;
   width: 80px;
   height: 2px;
-  background-color: black;
+  background-color: white;
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
@@ -56,7 +56,8 @@ body {
   align-items: center;
 }
 
-.overview_page {
+.overview_page,
+.overview_page_checked {
   display: none;
   position: absolute;
   top: 0;
@@ -72,7 +73,7 @@ body {
 .overview_page > .popup_container {
   position: relative;
   max-width: 60%;
-  max-height: 60%;
+  max-height: auto;
   border-radius: 8px;
   background-color: white;
   display: flex;
@@ -161,7 +162,7 @@ body {
   border-radius: 20px;
   font-size: 28px;
   font-weight: 700;
-  background-color: #ff6600;
+  background-color: #ed6a01;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -184,7 +185,7 @@ button {
   padding: 1rem 2rem;
   margin: 1rem;
   border: none;
-  background: #ff6600;
+  background: #ed6a01;
   color: #fff;
   border-radius: 8px;
   cursor: pointer;
@@ -196,8 +197,8 @@ button:hover {
 
 /* Start Left Part */
 #home {
-  background-color: white;
-  border-right: 1px solid #d1d1d1;
+  background-color: #ed6a01;
+  /* border-right: 1px solid #d1d1d1; */
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -220,23 +221,24 @@ button:hover {
 #categories > a {
   padding-block: 24px;
   text-decoration: none;
-  color: #5f1223;
+  color: white;
   text-transform: uppercase;
   font-size: 24px;
   font-weight: 700;
 }
 .btn_return {
-  background-color: #d1d1d1;
+  font-family: 'Fira Sans', sans-serif;
+  background-color: white;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0;
   border-radius: 0;
-  color: black;
+  color: #ed6a01;
 }
 .btn_return:hover {
-  background-color: #7c6248;
+  background-color: #ffe6d2 !important;
 }
 /* End Left Part */
 
@@ -282,7 +284,7 @@ button:hover {
   height: 100%;
   object-fit: cover;
   cursor: pointer;
-  border: 1px solid #d1d1d1;
+  /* border: 1px solid #d1d1d1; */
   border-radius: 8px;
 }
 .arrow_btn {
@@ -355,7 +357,7 @@ button:hover {
   align-items: center;
 }
 .items_selected > .item_selected > .item_name {
-  width: 100px;
+  width: 135px;
 }
 
 .items_selected > .item_selected > .quantity {
@@ -368,7 +370,7 @@ button:hover {
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  background-color: #ff6600;
+  background-color: #ed6a01;
   color: #fff;
   font-size: 12px;
   display: flex;
@@ -513,6 +515,7 @@ button:hover {
 
 /* Popup GAuffres */
 .popup-content_gaufres,
+.popup-content_gaufres_all,
 .popup-content_gaufres_choix {
   display: flex;
   justify-content: center;
@@ -523,6 +526,7 @@ button:hover {
 }
 
 .popup-content_gaufres > .option,
+.popup-content_gaufres_all > .option,
 .popup-content_gaufres_choix > .option {
   border: 1px solid #d1d1d1;
   padding: 10px 20px;
@@ -538,4 +542,8 @@ button:hover {
 .selected {
   border: 1px solid #989898 !important;
   background-color: #d1d1d15e !important;
+}
+
+.order_number {
+  margin-top: 0;
 }
