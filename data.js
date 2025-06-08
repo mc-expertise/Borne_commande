@@ -21,7 +21,7 @@ export const categories = [
     id: 'tiramisú',
     name: { fr: 'Tiramisú', ar: 'حلويات' },
     img: 'images/tiramisu_categ.png',
-    epuise: 0,
+    epuise: 1,
   },
 ];
 
@@ -70,6 +70,12 @@ export const products = {
       name: { fr: 'Churros Caramel', ar: 'تشوروز كراميل' },
       price: 7,
       img: 'images/churros_caramel.png',
+    },
+    {
+      id: 'churros-nature',
+      name: { fr: 'Churros Nature', ar: 'تشوروز كراميل' },
+      price: 7,
+      img: 'images/churros_nature.png',
     },
   ],
   churros_sales: [
