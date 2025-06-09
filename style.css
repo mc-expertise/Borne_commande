@@ -548,5 +548,11 @@ button:hover {
 }
 
 .order_number {
+  margin: 0;
+}
+
+.user_choice {
+  font-weight: 600;
   margin-top: 0;
+  padding: 0;
 }

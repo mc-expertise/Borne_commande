@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     orderNumber++;
     setTimeout(() => {
       overviewPage.style.display = 'none';
+      setLang('');
     }, 2000);
     printTicket();
   });
@@ -80,6 +81,14 @@ document.addEventListener('DOMContentLoaded', function () {
     orderHeading.className = 'order_number';
     orderHeading.textContent = `Votre Nº d'ordre: ${orderNumber}`;
     cartContainer.appendChild(orderHeading);
+
+    // Add user's choice below 'Ma commande'
+    const commandeType = document.body.getAttribute('data-commande-type');
+    const userChoice = commandeType || 'Not selected';
+    const choiceElement = document.createElement('p');
+    choiceElement.className = 'user_choice';
+    choiceElement.textContent = `Choix: ${userChoice}`;
+    cartContainer.appendChild(choiceElement);
 
     Object.values(cart).forEach((item) => {
       const itemDiv = document.createElement('div');

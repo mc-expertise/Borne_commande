@@ -47,8 +47,9 @@ const translations = {
 
 let currentLang = 'fr';
 
-function setLang(lang) {
+function setLang(lang, commandeType) {
   currentLang = lang;
+  document.body.setAttribute('data-commande-type', commandeType);
 
   if (!currentLang) {
     document.getElementById('langPage').classList.remove('hidden');
