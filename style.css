@@ -556,3 +556,29 @@ button:hover {
   margin-top: 0;
   padding: 0;
 }
+
+.outOfStock {
+  position: relative;
+  overflow: hidden;
+  background-color: #d1d1d1 !important;
+  color: black !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.outOfStock::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  rotate: 14deg;
+}
+.outOfStock::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  rotate: -14deg;
+}

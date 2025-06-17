@@ -119,3 +119,11 @@ export const products = {
     },
   ],
 };
+
+export const options = {
+  gaufres: [
+    { name: { fr: 'Sans', ar: 'بدون' }, price: 0, epuise: 1 },
+    { name: { fr: 'Banane', ar: 'موز' }, price: 3, epuise: 1 },
+    { name: { fr: 'Switeees', ar: 'سويتيز' }, price: 1, epuise: 0 },
+  ],
+};

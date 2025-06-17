@@ -1,4 +1,4 @@
-import { categories, products } from './data.js';
+import { categories, products, options } from './data.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   let cart = {};
@@ -213,6 +213,33 @@ document.addEventListener('DOMContentLoaded', function () {
       popup.style.display = 'none';
     });
 
+    const supplementOptionsContainer = popup.querySelector(
+      '.popup-content_gaufres'
+    );
+    supplementOptionsContainer.innerHTML = ''; // Clear existing options
+
+    // Dynamically create supplement options
+    options.gaufres.forEach((optData) => {
+      const optionDiv = document.createElement('div');
+      optionDiv.classList.add('option');
+      optionDiv.dataset.price = optData.price;
+      optionDiv.dataset.epuise = optData.epuise;
+
+      if (optData.epuise === 0) {
+        optionDiv.classList.add('outOfStock');
+      }
+
+      const span = document.createElement('span');
+      span.textContent = optData.name[lang];
+      optionDiv.appendChild(span);
+
+      if (optData.price > 0) {
+        optionDiv.innerHTML += ` +${optData.price}dh`;
+      }
+
+      supplementOptionsContainer.appendChild(optionDiv);
+    });
+
     const supplementOptions = popup.querySelectorAll(
       '.popup-content_gaufres .option'
     );
@@ -228,15 +255,24 @@ document.addEventListener('DOMContentLoaded', function () {
     supplementOptions.forEach((option) => {
       option.addEventListener('click', (e) => {
         e.stopPropagation();
+        console.log(
+          '🚀 ~ option.addEventListener ~ option.epuise:',
+          option.epuise
+        );
+
+        if (option.epuise === '0') {
+          return; // Prevent selection if out of stock
+        }
         const name = option.textContent.trim().toLowerCase();
-        if (name === 'sans') {
+        if (name.includes('sans')) {
+          // Check for 'sans' in any language
           // Deselect all if 'Sans' is selected
           supplementOptions.forEach((opt) => opt.classList.remove('selected'));
           option.classList.add('selected');
         } else {
           // If 'Sans' was selected, deselect it
           supplementOptions.forEach((opt) => {
-            if (opt.textContent.trim().toLowerCase() === 'sans') {
+            if (opt.textContent.trim().toLowerCase().includes('sans')) {
               opt.classList.remove('selected');
             }
           });
@@ -302,12 +338,15 @@ document.addEventListener('DOMContentLoaded', function () {
           let optionNames = [];
 
           selectedSupplement.forEach((supplement) => {
+            if (supplement.dataset.epuise === '0') {
+              return; // Skip out of stock items when calculating price and adding to cart
+            }
             const span = supplement.querySelector('span');
             const name = span
               ? span.textContent.trim()
               : supplement.textContent.trim();
 
-            if (name.toLowerCase() !== 'sans') {
+            if (!name.toLowerCase().includes('sans')) {
               additionalPrice += parseInt(supplement.dataset.price);
               optionNames.push(name);
             }
