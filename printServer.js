@@ -1,35 +1,58 @@
 const escpos = require('escpos');
 escpos.Network = require('escpos-network');
 
-const device = new escpos.Network('192.168.0.100'); // Replace with your printer's IP
-const options = { encoding: 'GB18030' }; // Default encoding
+async function printTicket(orderNumber, orderType, items, totalPrice) {
+  try {
+    const device = new escpos.Network('192.168.11.101'); // Use your printer IP
+    const options = { encoding: 'CP858' };
+    const printer = new escpos.Printer(device, options);
 
-const printer = new escpos.Printer(device, options);
+    device.open(function (error) {
+      if (error) {
+        console.error('Device open error:', error);
+        return;
+      }
 
-function printTicket(orderNumber, orderType, items, totalPrice) {
-  device.open(function (error) {
-    if (error) {
-      console.error('Error opening device:', error);
-      return;
-    }
-    printer
-      .font('a')
-      .align('ct')
-      .style('bu')
-      .size(1, 1)
-      .text(`Order Number: ${orderNumber}`)
-      .text(`Order Type: ${orderType}`)
-      .text('Items:')
-      .feed();
+      printer.raw(Buffer.from([0x1b, 0x74, 0x13]));
 
-    items.forEach((item) => {
-      printer.text(
-        `${item.name} - ${item.quantity} x ${item.price} DH = ${item.totalPrice} DH`
-      );
+      printer
+        .font('A')
+        .align('CT')
+        .style('B')
+        .size(1, 1)
+        .text('Order Nº: ' + orderNumber)
+        .text('') // Add space
+        .style('') // Reset style
+        .text(orderType)
+        .text('')
+        .text('') // Add space
+        .text('') // Add space
+        .text('------------------------');
+
+      items.forEach((item) => {
+        printer
+          .size(0, 0)
+          .text(`${item.quantity} x ${item.name.fr} ${item.price} DH\n`);
+        printer.text('');
+      });
+      printer.size(1, 1);
+      printer.text('------------------------');
+      printer
+        .text('')
+        .text('') // Add space
+        .text('') // Add space
+        .text('') // Add space
+        .style('B')
+        .style('B')
+        .size(1, 1)
+        .text('Total: ' + totalPrice + ' DH')
+        .text('\n\n\n\n\n\n')
+        .cut()
+        .close();
     });
-
-    printer.text(`Total Price: ${totalPrice} DH`).cut().close();
-  });
+  } catch (error) {
+    console.error('Error during printing:', error);
+  }
 }
 
 module.exports = { printTicket };

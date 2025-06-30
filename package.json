@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "escpos": "^3.0.0-alpha.6"
+    "cors": "^2.8.5",
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-network": "^3.0.0-alpha.5",
+    "express": "^5.1.0"
   }
 }

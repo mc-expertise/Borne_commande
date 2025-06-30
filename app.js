@@ -1,4 +1,5 @@
 import { categories, products, options } from './data.js';
+// import { printTicket } from './printServer.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   let cart = {};
@@ -32,18 +33,32 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   );
 
-  printButton.addEventListener('click', (e) => {
+  printButton.addEventListener('click', async (e) => {
     e.stopPropagation();
-    cart = {};
-    updateCartDisplay();
-    showEmptyCartMessage();
-    displayCheckedMark();
-    orderNumber++;
-    setTimeout(() => {
-      overviewPage.style.display = 'none';
-      setLang('');
-    }, 2000);
-    printTicket();
+    try {
+      const response = await fetch('http://localhost:3000/print', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderNumber,
+          orderType:
+            document.body.getAttribute('data-commande-type') || 'Not selected',
+          items: Object.values(cart),
+          totalPrice: Object.values(cart).reduce(
+            (total, item) => total + item.price * item.quantity,
+            0
+          ),
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        console.log('Print successful');
+      } else {
+        console.error('Print failed:', result.error);
+      }
+    } catch (err) {
+      console.error('Error calling print API:', err);
+    }
   });
 
   overviewPage.addEventListener('click', (e) => {
@@ -370,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
             name: {
               ...currentProduct.name,
               [lang]: `${currentProduct.name[lang]} ${
-                optionNames.length > 0 ? `- ${optionNames.join(', ')}` : ''
+                optionNames.length > 0 ? `${optionNames.join(' ')}` : ''
               }`,
             },
           };
