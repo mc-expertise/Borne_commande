@@ -6,7 +6,7 @@ const options = { encoding: 'GB18030' }; // Default encoding
 
 const printer = new escpos.Printer(device, options);
 
-function printTicket(orderNumber, items, totalPrice) {
+function printTicket(orderNumber, orderType, items, totalPrice) {
   device.open(function (error) {
     if (error) {
       console.error('Error opening device:', error);
@@ -18,6 +18,7 @@ function printTicket(orderNumber, items, totalPrice) {
       .style('bu')
       .size(1, 1)
       .text(`Order Number: ${orderNumber}`)
+      .text(`Order Type: ${orderType}`)
       .text('Items:')
       .feed();
 
