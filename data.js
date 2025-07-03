@@ -21,9 +21,20 @@ export const categories = [
     id: 'tiramisú',
     name: { fr: 'Tiramisú', ar: 'حلويات' },
     img: 'images/tiramisu_categ.png',
-    epuise: 1,
+    epuise: 0,
   },
 ];
+
+
+export const options = {
+  gaufres: [
+    { name: { fr: 'Sans', ar: 'بدون' }, price: 0, epuise: 1 },
+    { name: { fr: 'Banane', ar: 'موز' }, price: 3, epuise: 1 },
+    { name: { fr: 'Sweeties', ar: 'سويتيز' }, price: 1, epuise: 1 },
+  ],
+};
+
+
 
 export const products = {
   gaufres: [
@@ -120,10 +131,4 @@ export const products = {
   ],
 };
 
-export const options = {
-  gaufres: [
-    { name: { fr: 'Sans', ar: 'بدون' }, price: 0, epuise: 1 },
-    { name: { fr: 'Banane', ar: 'موز' }, price: 3, epuise: 1 },
-    { name: { fr: 'Switeees', ar: 'سويتيز' }, price: 1, epuise: 0 },
-  ],
-};
+

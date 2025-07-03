@@ -53,6 +53,15 @@ document.addEventListener('DOMContentLoaded', function () {
       const result = await response.json();
       if (result.success) {
         console.log('Print successful');
+        cart = {};
+        updateCartDisplay();
+        showEmptyCartMessage();
+        displayCheckedMark();
+        orderNumber++;
+        setTimeout(() => {
+          overviewPage.style.display = 'none';
+          setLang('');
+        }, 2000);
       } else {
         console.error('Print failed:', result.error);
       }

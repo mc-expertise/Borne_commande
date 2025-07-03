@@ -1,55 +1,76 @@
 const escpos = require('escpos');
 escpos.Network = require('escpos-network');
+escpos.USB = require('escpos-usb');
 
 async function printTicket(orderNumber, orderType, items, totalPrice) {
   try {
-    const device = new escpos.Network('192.168.11.101'); // Use your printer IP
+    const networkDevice = new escpos.Network('192.168.11.101'); // Ethernet printer IP
+    const usbDevice = new escpos.USB(); // USB printer
     const options = { encoding: 'CP858' };
-    const printer = new escpos.Printer(device, options);
+    const networkPrinter = new escpos.Printer(networkDevice, options);
+    const usbPrinter = new escpos.Printer(usbDevice, options);
 
-    device.open(function (error) {
-      if (error) {
-        console.error('Device open error:', error);
-        return;
-      }
+    function printOnPrinter(device, printer) {
+      return new Promise((resolve, reject) => {
+        device.open(function (error) {
+          if (error) {
+            console.error('Device open error:', error);
+            reject(error);
+            return;
+          }
 
-      printer.raw(Buffer.from([0x1b, 0x74, 0x13]));
+          printer.raw(Buffer.from([0x1b, 0x74, 0x13]));
 
-      printer
-        .font('A')
-        .align('CT')
-        .style('B')
-        .size(1, 1)
-        .text('Order Nº: ' + orderNumber)
-        .text('') // Add space
-        .style('') // Reset style
-        .text(orderType)
-        .text('')
-        .text('') // Add space
-        .text('') // Add space
-        .text('------------------------');
+          printer
+            .font('A')
+            .align('CT')
+            .style('B')
+            .size(2, 2)
+            .text("FOODIE'S")
+            .text('\n\n\n\n\n\n')
+            .size(1, 1)
+            .text('Commande Nº: ' + orderNumber)
+            .text('')
+            .style('')
+            .text(orderType)
+            .text('')
+            .text('')
+            .text('------------------------');
 
-      items.forEach((item) => {
-        printer
-          .size(0, 0)
-          .text(`${item.quantity} x ${item.name.fr} ${item.price} DH\n`);
-        printer.text('');
+          items.forEach((item) => {
+            printer
+              .size(0, 0)
+              .text(
+                `\x1b\x45\x01${item.quantity} x\x1b\x45\x00 ${item.name.fr} ${item.price} DH\n`
+              );
+            printer.text('');
+          });
+
+          printer.size(1, 1);
+          printer.text('------------------------');
+          printer
+            .text('')
+            .text('')
+            .text('')
+            .style('B')
+            .size(1, 1)
+            .text('Total: ' + totalPrice + ' DH')
+            .text('\n\n\n\n\n\n')
+            .size(0, 0)
+            .style('B')
+            .text('Bonne dégustation')
+            .text('06 61 84 04 05')
+            .text('\n\n\n\n\n\n')
+            .cut()
+            .close(() => resolve());
+        });
       });
-      printer.size(1, 1);
-      printer.text('------------------------');
-      printer
-        .text('')
-        .text('') // Add space
-        .text('') // Add space
-        .text('') // Add space
-        .style('B')
-        .style('B')
-        .size(1, 1)
-        .text('Total: ' + totalPrice + ' DH')
-        .text('\n\n\n\n\n\n')
-        .cut()
-        .close();
-    });
+    }
+
+    await Promise.all([
+      printOnPrinter(networkDevice, networkPrinter),
+      printOnPrinter(usbDevice, usbPrinter),
+    ]);
   } catch (error) {
     console.error('Error during printing:', error);
   }

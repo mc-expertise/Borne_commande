@@ -158,7 +158,7 @@ body {
 
 .content_lang > button {
   width: 20%;
-  height: 60%;
+  height: 35%;
   border-radius: 20px;
   font-size: 28px;
   font-weight: 700;
@@ -197,14 +197,14 @@ button:hover {
 
 /* Start Left Part */
 #home {
-  background-color: white;
+  background-color: #fdf8f2;
   border-right: 1px solid #d1d1d1;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  min-width: 20%;
+  min-width: 15%;
   position: fixed;
   z-index: 1000;
 }
@@ -221,9 +221,9 @@ button:hover {
 #categories > a {
   padding-block: 24px;
   text-decoration: none;
-  color: black;
+  color: rgb(250, 93, 2);
   text-transform: uppercase;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
 }
 .btn_return {
@@ -234,7 +234,7 @@ button:hover {
   justify-content: center;
   align-items: center;
   margin: 0;
-  border-radius: 0;
+  border-radius: 8px;
   color: white;
 }
 .btn_return:hover {
@@ -245,8 +245,8 @@ button:hover {
 /* Start Center Part */
 
 #products {
-  width: calc(100% - 45%);
-  margin-left: 20%;
+  width: calc(100% - 37%);
+  margin-left: 15%;
 }
 
 #product-category-title {
@@ -280,8 +280,8 @@ button:hover {
 }
 
 .product > img {
-  width: 100%;
-  height: 100%;
+  width: 117%;
+  height: auto;
   object-fit: cover;
   cursor: pointer;
   /* border: 1px solid #d1d1d1; */
@@ -309,7 +309,7 @@ button:hover {
 /* start Right Part */
 #cart {
   background-color: #fdf8f2;
-  width: 25%;
+  width: 23%;
   height: 100vh;
   position: fixed;
   z-index: 1000;
@@ -321,7 +321,6 @@ button:hover {
 }
 
 .cart_commande {
-  padding: 24px 16px 0px;
   max-height: calc(100% - 350px);
 }
 
@@ -382,7 +381,7 @@ button:hover {
   margin: 6px;
 }
 .total_cost {
-  background-color: white;
+  background-color: #fdf8f2;
   padding: 30px;
   display: flex;
   flex-direction: column;
