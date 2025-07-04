@@ -1,11 +1,12 @@
 const escpos = require('escpos');
+const usb = require('usb'); // Add this import
 escpos.Network = require('escpos-network');
 escpos.USB = require('escpos-usb');
 
 async function printTicket(orderNumber, orderType, items, totalPrice) {
   try {
     const networkDevice = new escpos.Network('192.168.11.101'); // Ethernet printer IP
-    const usbDevice = new escpos.USB(0x1fc9, 0x2016); // USB printer
+    const usbDevice = new escpos.USB(0x1fc9, 0x2016, usb); // USB printer
     const options = { encoding: 'CP858' };
     const networkPrinter = new escpos.Printer(networkDevice, options);
     const usbPrinter = new escpos.Printer(usbDevice, options);
