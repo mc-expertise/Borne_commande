@@ -1,17 +1,14 @@
 const escpos = require('escpos');
-const usb = require('usb'); // Add this import
 escpos.Network = require('escpos-network');
-escpos.USB = require('escpos-usb');
 
 async function printTicket(orderNumber, orderType, items, totalPrice) {
   try {
-    const networkDevice = new escpos.Network('192.168.11.101'); // Ethernet printer IP
-    const usbDevice = new escpos.USB(0x1fc9, 0x2016, usb); // USB printer
     const options = { encoding: 'CP858' };
-    const networkPrinter = new escpos.Printer(networkDevice, options);
-    const usbPrinter = new escpos.Printer(usbDevice, options);
 
-    function printOnPrinter(device, printer) {
+    async function printOnPrinter(ip, isSecondPrinter = false) {
+      const device = new escpos.Network(ip);
+      const printer = new escpos.Printer(device, options);
+
       return new Promise((resolve, reject) => {
         device.open(function (error) {
           if (error) {
@@ -20,13 +17,17 @@ async function printTicket(orderNumber, orderType, items, totalPrice) {
             return;
           }
 
+          // Your printing commands here, same as before
           printer.raw(Buffer.from([0x1b, 0x74, 0x13]));
+          if (isSecondPrinter) {
+            printer.raw(Buffer.from([0x1b, 0x23, 21]));
+          }
 
           printer
             .font('A')
             .align('CT')
             .style('B')
-            .size(2, 2)
+            .size(1, 1)
             .text("FOODIE'S")
             .text('\n\n\n\n\n\n')
             .size(1, 1)
@@ -42,7 +43,13 @@ async function printTicket(orderNumber, orderType, items, totalPrice) {
             printer
               .size(0, 0)
               .text(
-                `\x1b\x45\x01${item.quantity} x\x1b\x45\x00 ${item.name.fr} ${item.price} DH\n`
+                '\x1b\x45\x01' +
+                  item.quantity +
+                  ' x\x1b\x45\x00 ' +
+                  item.name.fr +
+                  ' ' +
+                  item.price +
+                  ' DH\n'
               );
             printer.text('');
           });
@@ -57,21 +64,23 @@ async function printTicket(orderNumber, orderType, items, totalPrice) {
             .size(1, 1)
             .text('Total: ' + totalPrice + ' DH')
             .text('\n\n\n\n\n\n')
-            .size(0, 0)
+            .size(1, 1)
             .style('B')
             .text('Bonne dégustation')
             .text('06 61 84 04 05')
-            .text('\n\n\n\n\n\n')
+            .feed(6)
             .cut()
             .close(() => resolve());
         });
       });
     }
 
-    await Promise.all([
-      printOnPrinter(networkDevice, networkPrinter),
-      printOnPrinter(usbDevice, usbPrinter),
-    ]);
+    // Print two tickets on first printer
+    await printOnPrinter('192.168.11.103', false);
+    await printOnPrinter('192.168.11.103', false);
+
+    // Print one ticket on second printer
+    await printOnPrinter('192.168.123.100', true);
   } catch (error) {
     console.error('Error during printing:', error);
   }
