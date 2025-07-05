@@ -1,3 +1,4 @@
 @echo off
 start cmd /k "node server.js"
-start cmd /k "live-server"
+start http://localhost:3000/
+start http://localhost:3000/admin.html

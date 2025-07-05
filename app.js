@@ -1,7 +1,19 @@
-import { categories, products, options } from './data.js';
-// import { printTicket } from './printServer.js';
+// Remove the import line
+// import { categories, products, options } from './data.js';
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+  // Fetch data from server
+  let menuData;
+  try {
+    const response = await fetch('http://localhost:3000/api/menu');
+    menuData = await response.json();
+  } catch (error) {
+    console.error('Failed to fetch menu data:', error);
+    return;
+  }
+
+  const { categories, products, options } = menuData;
+
   let cart = {};
   let orderNumber = 1;
   const categoriesContainer = document.querySelector('#categories');
@@ -182,9 +194,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function displayProducts(categoryId, lang, epuise = 1) {
     productList.innerHTML = ''; // Clear existing products
-    // productCategoryTitle.textContent = categories.find(
-    //   (category) => category.id === categoryId
-    // ).name[lang];
     const categoryProducts = products[categoryId];
     categoryProducts.forEach((product) => {
       const productDiv = document.createElement('div');
@@ -193,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
       productImg.src = product.img;
       productImg.alt = product.name[lang];
 
-      if (epuise === 0) {
+      if (product.epuise === 0) {
         productImg.style.opacity = '0.5';
         const outOfStockBadge = document.createElement('div');
         outOfStockBadge.textContent = 'Épuisé';
@@ -203,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       productImg.addEventListener('click', (e) => {
         e.preventDefault();
-        if (epuise === 0) return;
-        if (categoryId === 'gaufres' && epuise !== 0) {
-          if (product.id === 'gaufre-mixte' && epuise !== 0) {
+        if (product.epuise === 0) return;
+        if (categoryId === 'gaufres' && product.epuise !== 0) {
+          if (product.id === 'gaufre-mixte' && product.epuise !== 0) {
             showPopup(product, lang, true); // Pass a flag for mix
           } else {
             showPopup(product, lang, false);
@@ -560,39 +569,32 @@ document.addEventListener('DOMContentLoaded', function () {
     itemsSelectedContainer.innerHTML = '';
     // Display message if cart is empty
     const emptyMessage = document.createElement('p');
-    emptyMessage.textContent = 'Votre panier est vide.';
-    emptyMessage.setAttribute('data-i18n', 'cart_vide');
+    emptyMessage.className = 'empty_cart_message';
+    emptyMessage.setAttribute('data-i18n', 'empty_cart');
+    emptyMessage.textContent = translations[lang]['empty_cart'];
     itemsSelectedContainer.appendChild(emptyMessage);
+    totalPriceElement.textContent = '0 DH';
   }
 
-  const cartIsEmpty = () => {
+  function cartIsEmpty() {
     return Object.keys(cart).length === 0;
-  };
+  }
 
   function displayCheckedMark() {
-    const contentOfPage = document.querySelector(
-      '.overview_page .popup_container'
+    const checkedMarkContainer = document.querySelector(
+      '.checked_mark_container'
     );
-    const overviewPage = document.createElement('div');
-    overviewPage.className = 'overview_page_checked';
-    overviewPage.style.display = 'flex';
-    const checkedMark = document.createElement('video');
-    checkedMark.src = 'images/checkedMark1.webm';
-    checkedMark.className = 'checked';
-    checkedMark.style.width = '300px';
-    checkedMark.autoplay = true;
-    checkedMark.loop = false;
-    checkedMark.muted = true;
-    checkedMark.playsInline = true;
-    overviewPage.appendChild(checkedMark);
-    contentOfPage.appendChild(overviewPage);
-
+    checkedMarkContainer.style.display = 'flex';
     setTimeout(() => {
-      overviewPage.style.display = 'none';
-      checkedMark.src = '';
-    }, 4000);
+      checkedMarkContainer.style.display = 'none';
+    }, 2000);
   }
 
-  // Initialize categories with the default language
-  updateCategories(document.documentElement.lang || 'fr');
+  // Initialize the app
+  const initialLang = document.documentElement.lang || 'fr';
+  updateCategories(initialLang);
+  if (categories.length > 0) {
+    displayProducts(categories[0].id, initialLang, categories[0].epuise);
+  }
+  showEmptyCartMessage(initialLang);
 });

@@ -5,6 +5,7 @@
     "escpos-network": "^3.0.0-alpha.5",
     "escpos-usb": "^3.0.0-alpha.4",
     "express": "^5.1.0",
+    "sqlite3": "^5.1.7",
     "usb": "^2.15.0"
   }
 }

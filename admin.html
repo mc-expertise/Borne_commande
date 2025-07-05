@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Menu Admin</title>
+    <style>
+      .options-admin {
+        padding: 20px;
+      }
+      .products-admin {
+        padding: 20px;
+      }
+
+      .admin-item {
+        position: relative;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .admin-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .overview_epuise {
+        background-color: red;
+        padding: 10px 20px;
+        border-radius: 20px;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .unavailable .overview_epuise {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 40%;
+        transform: translate(-50%, 0%);
+      }
+
+      .available .overview_epuise {
+        display: none;
+      }
+
+      .unavailable img {
+        opacity: 0.4;
+      }
+
+      .available img {
+        opacity: 1;
+      }
+      .item-info {
+        flex: 1;
+      }
+
+      .item-info span {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .toggle-btn {
+        padding: 20px 10px;
+        width: 100%;
+        cursor: pointer;
+        font-size: 24px;
+        border-radius: 8px;
+        border: none;
+        color: white;
+      }
+      .available {
+        background: #d4edda;
+      }
+      .unavailable {
+        background: #f8d7da;
+      }
+
+      .unavailable .toggle-btn {
+        background: green;
+      }
+
+      .available .toggle-btn {
+        background: red;
+      }
+
+      .option-category {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      .options_content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+        gap: 15px;
+      }
+      .product_content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      .product-category {
+        margin-bottom: 20px;
+      }
+
+      .product-category h3 {
+        margin-bottom: 10px;
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body style="max-width: 1200px; margin: 0 auto">
+    <h1 style="margin: 40px auto; width: fit-content">Menu Management</h1>
+    <div id="options-admin" style="padding: 20px"></div>
+    <div id="products-admin" style="padding: 20px"></div>
+
+    <script>
+      async function loadAdmin() {
+        const response = await fetch('/api/menu');
+        const data = await response.json();
+        console.log('🚀 ~ loadAdmin ~ data:', data);
+
+        // Options
+        const optionsContainer = document.getElementById('options-admin');
+        optionsContainer.innerHTML = '<h2>Options</h2>';
+
+        Object.entries(data.options).forEach(([categoryId, options]) => {
+          const categoryDiv = document.createElement('div');
+          categoryDiv.className = 'option-category';
+          categoryDiv.innerHTML = `<h3>${
+            categoryId.charAt(0).toUpperCase() + categoryId.slice(1)
+          } Options</h3>`;
+
+          // Create options_content wrapper
+          const optionsContentDiv = document.createElement('div');
+          optionsContentDiv.className = 'options_content';
+
+          options.forEach((option, index) => {
+            // Filter out "Sans" option
+            if (option.name.fr.toLowerCase() === 'sans') {
+              return;
+            }
+
+            const div = document.createElement('div');
+            div.className = `admin-item ${
+              option.epuise ? 'available' : 'unavailable'
+            }`;
+            div.innerHTML = `
+              <img src="${option.img || 'images/logo.png'}" alt="${
+              option.name.fr
+            }" />
+            <div class="overview_epuise">Epuise</div>
+              <div class="item-info">
+                <span>${option.name.fr} - ${option.price}DH</span>
+              </div>
+              <button class="toggle-btn" onclick="toggleOption('${categoryId}', ${index}, ${
+              option.epuise
+            })">
+                ${option.epuise ? 'Epuise' : 'EnStock'}
+              </button>
+            `;
+            optionsContentDiv.appendChild(div);
+          });
+
+          categoryDiv.appendChild(optionsContentDiv);
+          optionsContainer.appendChild(categoryDiv);
+        });
+
+        // Products
+        const prodContainer = document.getElementById('products-admin');
+        prodContainer.innerHTML = '<h2>Products</h2>';
+
+        Object.entries(data.products).forEach(([categoryId, products]) => {
+          const categoryDiv = document.createElement('div');
+          categoryDiv.className = 'product-category';
+          categoryDiv.innerHTML = `<h3>Category: ${categoryId}</h3>`;
+
+          const productContentDiv = document.createElement('div');
+          productContentDiv.className = 'product_content';
+
+          products.forEach((product) => {
+            const div = document.createElement('div');
+            div.className = `admin-item ${
+              product.epuise ? 'available' : 'unavailable'
+            }`;
+            div.innerHTML = `
+              <img src="${product.img}" alt="${product.name.fr}" />
+              <div class="overview_epuise">Epuise</div>
+              <div class="item-info">
+                <span>${product.name.fr}</span>
+              </div>
+              <button class="toggle-btn" onclick="toggleProduct('${categoryId}', '${
+              product.id
+            }', ${product.epuise})">
+                ${product.epuise ? 'Epuise' : 'EnStock'}
+              </button>
+            `;
+            productContentDiv.appendChild(div);
+          });
+
+          categoryDiv.appendChild(productContentDiv);
+          prodContainer.appendChild(categoryDiv);
+        });
+      }
+
+      async function toggleOption(categoryId, optionIndex, currentEpuise) {
+        const newEpuise = currentEpuise ? 0 : 1;
+        await fetch(`/api/options/${categoryId}/${optionIndex}/epuise`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ epuise: newEpuise }),
+        });
+        loadAdmin();
+      }
+
+      async function toggleProduct(categoryId, productId, currentEpuise) {
+        const newEpuise = currentEpuise ? 0 : 1;
+        await fetch(`/api/products/${categoryId}/${productId}/epuise`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ epuise: newEpuise }),
+        });
+        loadAdmin();
+      }
+
+      loadAdmin();
+    </script>
+  </body>
+</html>
