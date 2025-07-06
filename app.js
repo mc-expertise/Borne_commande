@@ -570,8 +570,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Display message if cart is empty
     const emptyMessage = document.createElement('p');
     emptyMessage.className = 'empty_cart_message';
-    emptyMessage.setAttribute('data-i18n', 'empty_cart');
-    emptyMessage.textContent = translations[lang]['empty_cart'];
+    emptyMessage.textContent = 'Votre panier est vide.';
+    emptyMessage.setAttribute('data-i18n', 'cart_vide');
     itemsSelectedContainer.appendChild(emptyMessage);
     totalPriceElement.textContent = '0 DH';
   }
@@ -581,13 +581,27 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   function displayCheckedMark() {
-    const checkedMarkContainer = document.querySelector(
-      '.checked_mark_container'
+    const contentOfPage = document.querySelector(
+      '.overview_page .popup_container'
     );
-    checkedMarkContainer.style.display = 'flex';
+    const overviewPage = document.createElement('div');
+    overviewPage.className = 'overview_page_checked';
+    overviewPage.style.display = 'flex';
+    const checkedMark = document.createElement('video');
+    checkedMark.src = 'images/checkedMark1.webm';
+    checkedMark.className = 'checked';
+    checkedMark.style.width = '300px';
+    checkedMark.autoplay = true;
+    checkedMark.loop = false;
+    checkedMark.muted = true;
+    checkedMark.playsInline = true;
+    overviewPage.appendChild(checkedMark);
+    contentOfPage.appendChild(overviewPage);
+
     setTimeout(() => {
-      checkedMarkContainer.style.display = 'none';
-    }, 2000);
+      overviewPage.style.display = 'none';
+      checkedMark.src = '';
+    }, 4000);
   }
 
   // Initialize the app
